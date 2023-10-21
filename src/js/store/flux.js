@@ -1,42 +1,96 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
-			demo: [
-				{
-					title: "FIRST",
-					background: "white",
-					initial: "white"
-				},
-				{
-					title: "SECOND",
-					background: "white",
-					initial: "white"
-				}
-			]
+			url: 'https://swapi.tech/api/',
+			imgUrl: 'https://starwars-visualguide.com/assets/img',
+			people: [],
+			planets: [],
+			vehicles: [],
+			data: [],
+			favorites: [],
+			peopleImg: [],
+			planetsImg: [],
+			vehiclesImg: [],
+			categories: ['people', 'planets', 'vehicles'],
+			categoriesImg: ['chatacters', 'planets', 'vehicles']
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
-			exampleFunction: () => {
-				getActions().changeColor(0, "green");
-			},
-			loadSomeData: () => {
-				/**
-					fetch().then().then(data => setStore({ "foo": data.bar }))
-				*/
-			},
-			changeColor: (index, color) => {
-				//get the store
+			loadData: async (category) => {
 				const store = getStore();
+				/* const localStorageData = localStorage.getItem(category);
+				const localStorageDataWithDetails = localStorage.getItem(`${category}_details`);
 
-				//we have to loop the entire demo array to look for the respective index
-				//and change its color
-				const demo = store.demo.map((elm, i) => {
-					if (i === index) elm.background = color;
-					return elm;
-				});
 
-				//reset the global store
-				setStore({ demo: demo });
+				if(localStorageData && localStorageDataWithDetails) {
+					const data = JSON.parse(localStorageData);
+					const dataWithDetails = JSON.parse(localStorageDataWithDetails);
+					setStore({[category]: data, data: data.results, dataWithDetails: })
+				} */
+				try {
+					const resp = await fetch(`${store.url}/${category}`);
+					if (!resp.ok) {
+						throw new Error("Network response was not ok");
+					}
+					const data = await resp.json();
+					// console.log('here1', data);
+
+					const dataWithDetails = [];
+
+					for (const item of data.results) {
+						const detailsResp = await fetch(item.url);
+						if (!detailsResp.ok) {
+							throw new Error('Network response was not ok');
+						}
+						const detailData = await detailsResp.json();
+						detailData.result.properties.uid = item.uid;
+						dataWithDetails.push(detailData.result.properties);
+						// console.log(item);
+						//dataWithDetails.push(item);
+						// console.log('detailDAta', detailData, 'datawithdetails', dataWithDetails);
+					}
+					if (category === "people") {
+						setStore({ people: dataWithDetails, data: data.results });
+						// console.log('loadData people', data, store.data);
+					} else if (category === "planets") {
+						setStore({ planets: dataWithDetails, data: data.results });
+
+						// console.log('loadData planets', data, store.data);
+					} else if (category === "vehicles") {
+						setStore({ vehicles: dataWithDetails, data: data.results });
+
+						// console.log('loadData vehicles', data, store.data);
+					}
+					// console.log('for loop end', store.people, store.planets, store.vehicles);
+				} catch (error) {
+					console.error(`There was a problem with the fetch operation: ${error}`);
+				}
+			},
+			capitalizeFirstLetter: (string) => {
+				return string.charAt(0).toUpperCase() + string.slice(1);
+			},
+			addFavorite: (category, index) => {
+				const store = getStore();
+				console.log('addFavorite', 'index', index, 'category', category);
+				let item = null;
+				if (category === 'people') {
+					item = store.people[index];
+				} else if (category === 'planets') {
+					item = store.planets[index];
+				} else if (category === 'vehicles') {
+					item = store.vehicles[index];
+				}
+				//need to check if item is already inside store.favorites to avoid duplicates
+				if (item) {
+					setStore({ favorites: [...store.favorites, item] });
+				}
+
+				console.log('favorites', store.favorites);
+
+			},
+			removeFavorite: (index) => {
+				const store = getStore();
+				const removedFavorite = store.favorites.filter((_, itemIndex) => itemIndex != index)
+				setStore({ favorites: removedFavorite });
 			}
 		}
 	};

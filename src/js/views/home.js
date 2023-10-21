@@ -1,15 +1,25 @@
-import React from "react";
-import rigoImage from "../../img/rigo-baby.jpg";
-import "../../styles/home.css";
+import React, { useContext } from "react";
+import { Context } from "../store/appContext";
+import "../../styles/home.scss";
+import DataCard from "../component/Card";
+import { Container } from "react-bootstrap";
 
-export const Home = () => (
-	<div className="text-center mt-5">
-		<h1>Hello Rigo!</h1>
-		<p>
-			<img src={rigoImage} />
-		</p>
-		<a href="#" className="btn btn-success">
-			If you see this green button, bootstrap is working
-		</a>
-	</div>
-);
+const Home = () => {
+
+	const { store, actions } = useContext(Context);
+	//console.log("Categories from store:", store.categories);
+
+
+	return (
+		<Container>
+			{store.categories.map((category, idx) => (
+				<div key={idx}>
+					<h3 className="mt-4" >{actions.capitalizeFirstLetter(category)}</h3>
+					<DataCard category={category} />
+				</div>
+			))}
+		</Container>
+	);
+};
+
+export default Home;
