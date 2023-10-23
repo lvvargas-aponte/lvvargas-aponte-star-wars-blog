@@ -78,7 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					item = store.vehicles[index];
 				}
 				//need to check if item is already inside store.favorites to avoid duplicates
-				if (item && !store.favorites.some(favItem => favItem.id === item.id)) {
+				if (item) {
 					setStore({ favorites: [...store.favorites, item] });
 				}
 
