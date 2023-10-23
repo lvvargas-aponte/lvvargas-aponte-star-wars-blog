@@ -20,44 +20,31 @@ const DataCard = ({ category }) => {
                 {category && store[category].map((item, idx) => (
                     <Card className="mt-3 bg-transparent border-info" key={idx}>
                         <Card.Body className="p-0">
-                            {/* refactor code to have 1 card, instead of 3 */}
+                            <Card.Img variant="top" className="m-0 card-img" src={`https://starwars-visualguide.com/assets/img/${category === 'people' ? 'characters' : category}/${item.uid}.jpg`} alt="Card image cap" />
+                            <Card.Title className="m-2">{item.name}</Card.Title>
                             {category === 'people' && (
                                 <>
-                                    <Card.Img variant="top" className="m-0 card-img" src={`https://starwars-visualguide.com/assets/img/characters/${item.uid}.jpg`} alt="Card image cap" />
-                                    <Card.Title className="m-2">{item.name}</Card.Title>
                                     <Card.Text className="m-2">Gender: {item.gender}</Card.Text>
                                     <Card.Text className="m-2">Hair Color: {item.hair_color}</Card.Text>
                                     <Card.Text className="m-2">Eye Color: {item.eye_color}</Card.Text>
-                                    <Link to={`/details/${category}/${item.uid}`}>
-                                        <Button variant="outline-primary m-3">Learn More!</Button>
-                                    </Link>
-                                    <Button variant="outline-warning m-3" className="float-end" onClick={() => actions.addFavorite(category, idx)}><FontAwesomeIcon className="float-end" icon={store.favorites.find(fav => fav.name === item.name) ? faSolidHeart : faRegularHeart} /></Button>
                                 </>
                             )}
                             {category === 'planets' && (
                                 <>
-                                    <Card.Img variant="top" className="m-0 card-img" src={`https://starwars-visualguide.com/assets/img/planets/${item.uid}.jpg`} alt="Card image cap" />
-                                    <Card.Title className="m-2">{item.name}</Card.Title>
                                     <Card.Text className="m-2">Population: {item.population}</Card.Text>
                                     <Card.Text className="m-2">Terrain: {item.climate}</Card.Text>
-                                    <Link to={`/details/${category}/${item.uid}`}>
-                                        <Button variant="outline-primary m-3">Learn More!</Button>
-                                    </Link>
-                                    <Button variant="outline-warning m-3" className="float-end" onClick={() => actions.addFavorite(category, idx)} ><FontAwesomeIcon className="float-end" icon={store.favorites.find(fav => fav.name === item.name) ? faSolidHeart : faRegularHeart} /></Button>
                                 </>
                             )}
                             {category === 'vehicles' && (
                                 <>
-                                    <Card.Img variant="top" className="m-0 card-img" src={`https://starwars-visualguide.com/assets/img/vehicles/${item.uid}.jpg`} alt="Card image cap" />
-                                    <Card.Title className="m-2">{item.name}</Card.Title>
                                     <Card.Text className="m-2">Model: {item.model}</Card.Text>
                                     <Card.Text className="m-2">Manufacturer: {item.manufacturer}</Card.Text>
-                                    <Link to={`/details/${category}/${item.uid}`}>
-                                        <Button variant="outline-primary m-3">Learn More!</Button>
-                                    </Link>
-                                    <Button variant="outline-warning m-3" className="float-end" onClick={() => actions.addFavorite(category, idx)}><FontAwesomeIcon className="float-end" icon={store.favorites.find(fav => fav.name === item.name) ? faSolidHeart : faRegularHeart} /></Button>
                                 </>
                             )}
+                            <Link to={`/details/${category}/${item.uid}`}>
+                                <Button variant="outline-primary m-3">Learn More!</Button>
+                            </Link>
+                            <Button variant="outline-warning m-3" className="float-end" onClick={() => actions.addFavorite(category, idx)}><FontAwesomeIcon className="float-end" icon={store.favorites.find(fav => fav.name === item.name) ? faSolidHeart : faRegularHeart} /></Button>
                         </Card.Body>
                     </Card>
                 ))}

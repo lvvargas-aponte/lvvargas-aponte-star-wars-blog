@@ -17,15 +17,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 		actions: {
 			loadData: async (category) => {
 				const store = getStore();
-				/* const localStorageData = localStorage.getItem(category);
-				const localStorageDataWithDetails = localStorage.getItem(`${category}_details`);
+				const localStorageData = localStorage.getItem(category);
+				const localStorageTimestamp = localStorage.getItem(`${category}_timestamp`);
+				const now = new Date();
 
+				console.log('localstorage', localStorageData, localStorageTimestamp);
 
-				if(localStorageData && localStorageDataWithDetails) {
+				if (localStorageData && localStorageTimestamp) {
 					const data = JSON.parse(localStorageData);
-					const dataWithDetails = JSON.parse(localStorageDataWithDetails);
-					setStore({[category]: data, data: data.results, dataWithDetails: })
-				} */
+					const lastFetched = new Date(localStorageTimestamp);
+
+					if (now - lastFetched <= 60 * 60 * 1000) {
+						setStore({ [category]: data, data: data.results })
+						return;
+					}
+				}
 				try {
 					const resp = await fetch(`${store.url}/${category}`);
 					if (!resp.ok) {
@@ -44,23 +50,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 						const detailData = await detailsResp.json();
 						detailData.result.properties.uid = item.uid;
 						dataWithDetails.push(detailData.result.properties);
-						// console.log(item);
-						//dataWithDetails.push(item);
-						// console.log('detailDAta', detailData, 'datawithdetails', dataWithDetails);
 					}
-					if (category === "people") {
-						setStore({ people: dataWithDetails, data: data.results });
-						// console.log('loadData people', data, store.data);
-					} else if (category === "planets") {
-						setStore({ planets: dataWithDetails, data: data.results });
 
-						// console.log('loadData planets', data, store.data);
-					} else if (category === "vehicles") {
-						setStore({ vehicles: dataWithDetails, data: data.results });
 
-						// console.log('loadData vehicles', data, store.data);
-					}
-					// console.log('for loop end', store.people, store.planets, store.vehicles);
+					localStorage.setItem(category, JSON.stringify(dataWithDetails));
+					localStorage.setItem(`${category}_timestamp`, now.toString());
+
+					setStore({ [category]: dataWithDetails, data: data.results });
+
+
 				} catch (error) {
 					console.error(`There was a problem with the fetch operation: ${error}`);
 				}
@@ -80,7 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					item = store.vehicles[index];
 				}
 				//need to check if item is already inside store.favorites to avoid duplicates
-				if (item) {
+				if (item && !store.favorites.some(favItem => favItem.id === item.id)) {
 					setStore({ favorites: [...store.favorites, item] });
 				}
 

@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Context } from "../store/appContext";
 import { Container, Card } from "react-bootstrap";
 import { useParams } from "react-router";
+import DetailItem from "./DetailItem";
 
 const Details = () => {
 
@@ -16,10 +17,10 @@ const Details = () => {
         item = store.people.find(person => person.uid === id)
         imageUrl = `https://starwars-visualguide.com/assets/img/characters/${item.uid}.jpg`;
     } else if (category === 'planets') {
-        item = store.planets.find(vehicle => vehicle.uid === id);
+        item = store.planets.find(planet => planet.uid === id);
         imageUrl = `https://starwars-visualguide.com/assets/img/planets/${item.uid}.jpg`;
     } else if (category === 'vehicles') {
-        item = store.planets.find(planet => planet.uid === id)
+        item = store.vehicles.find(vehicle => vehicle.uid === id)
         imageUrl = `https://starwars-visualguide.com/assets/img/vehicles/${item.uid}.jpg`;
     }
 
@@ -42,80 +43,34 @@ const Details = () => {
                     </div>
                 </div>
             </Card>
-            {/* need to refactor code to make this more dynamic */}
             <div className="row">
-                {category === 'people' && (<div className="col-2 fs-3">
-                    <h3>Homeworld</h3>
-                    <p>{store.planets.find(planet => planet.url === item.homeworld)?.name}</p>
-                </div>)}
-                {category === 'people' && (<div className="col-2 fs-3">
-                    <h3>Birth Year</h3>
-                    <p>{item.birth_year}</p>
-                </div>)}
-                {category === 'people' && (<div className="col-2 fs-3">
-                    <h3>Eye Color</h3>
-                    <p>{item.eye_color}</p>
-                </div>)}
-                {category === 'people' && (<div className="col-2 fs-3">
-                    <h3>Gender</h3>
-                    <p>{item.gender}</p>
-                </div>)}
-                {category === 'people' && (<div className="col-2 fs-3">
-                    <h3>Height</h3>
-                    <p>{item.height}</p>
-                </div>)}
-                {category === 'people' && (<div className="col-2 fs-3">
-                    <h3>Skin Color</h3>
-                    <p>{item.skin_color}</p>
-                </div>)}
-                {category === 'planets' && (<div className="col-2 fs-3">
-                    <h3>Climate</h3>
-                    <p>{item.climate}</p>
-                </div>)}
-                {category === 'planets' && (<div className="col-2 fs-3">
-                    <h3>Terrain</h3>
-                    <p>{item.terrain}</p>
-                </div>)}
-                {category === 'planets' && (<div className="col-2 fs-3">
-                    <h3>Gravity</h3>
-                    <p>{item.gravity}</p>
-                </div>)}
-                {category === 'planets' && (<div className="col-2 fs-3">
-                    <h3>Orbital Period</h3>
-                    <p>{item.orbital_period}</p>
-                </div>)}
-                {category === 'planets' && (<div className="col-2 fs-3">
-                    <h3>Rotation Period</h3>
-                    <p>{item.rotation_period}</p>
-                </div>)}
-                {category === 'planets' && (<div className="col-2 fs-3">
-                    <h3>Population</h3>
-                    <p>{item.population}</p>
-                </div>)}
-                {category === 'vehicles' && (<div className="col-2 fs-3">
-                    <h3>Climate</h3>
-                    <p>{item.climate}</p>
-                </div>)}
-                {category === 'planets' && (<div className="col-2 fs-3">
-                    <h3>Terrain</h3>
-                    <p>{item.terrain}</p>
-                </div>)}
-                {category === 'planets' && (<div className="col-2 fs-3">
-                    <h3>Gravity</h3>
-                    <p>{item.gravity}</p>
-                </div>)}
-                {category === 'planets' && (<div className="col-2 fs-3">
-                    <h3>Orbital Period</h3>
-                    <p>{item.orbital_period}</p>
-                </div>)}
-                {category === 'planets' && (<div className="col-2 fs-3">
-                    <h3>Rotation Period</h3>
-                    <p>{item.rotation_period}</p>
-                </div>)}
-                {category === 'planets' && (<div className="col-2 fs-3">
-                    <h3>Population</h3>
-                    <p>{item.population}</p>
-                </div>)}
+                {category === 'people' && (
+                    <>
+                        <DetailItem label="Homeworld" value={store.planets.find(planet => planet.url === item.homeworld)?.name} />
+                        <DetailItem label="Birth Year" value={item.birth_year} />
+                        <DetailItem label="Eye Color" value={item.eye_color} />
+                        <DetailItem label="Gender" value={item.gender} />
+                        <DetailItem label="Height" value={item.height} />
+                        <DetailItem label="Skin Color" value={item.skin_color} />
+                    </>)}
+                {category === 'planets' && (
+                    <>
+                        <DetailItem label="Climate" value={item.climate} />
+                        <DetailItem label="Terrain" value={item.terrain} />
+                        <DetailItem label="Gravity" value={item.gravity} />
+                        <DetailItem label="Orbital Period" value={item.orbital_period} />
+                        <DetailItem label="Rotation Period" value={item.rotation_period} />
+                        <DetailItem label="Population" value={item.population} />
+                    </>)}
+                {category === 'vehicles' && (
+                    <>
+                        <DetailItem label="Model" value={item.model} />
+                        <DetailItem label="Vehicle Class" value={item.vehicle_class} />
+                        <DetailItem label="Manufacturer" value={item.manufacturer} />
+                        <DetailItem label="Cost in Credits" value={item.cost_in_credits} />
+                        <DetailItem label="Crew" value={item.crew} />
+                        <DetailItem label="Passengers" value={item.passengers} />
+                    </>)}
             </div>
         </Container>
     )
